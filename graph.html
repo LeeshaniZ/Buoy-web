@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Buoy Monitoring Dashboard</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for hamburger and arrow icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: Abhaya Libre -->
+    <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS for styling -->
+    <style>
+        body {
+            font-family: 'Abhaya Libre', serif;
+            background: url('https://i.imgur.com/rpqfE82.png') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Overlay for background image */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(121, 110, 110, 0.616); /* Grayish-brown overlay for readability */
+            z-index: -1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, #96badb 0%, #8ab0d0 100%);
+            padding-top: 65px;
+            padding-inline: 10px;
+            width: 200px;
+            border-radius: 20px;
+            top: 10px;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar a {
+            color: #000000;
+            text-decoration: none;
+            font-size: x-large;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            margin: 10px 10px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        .sidebar a.active {
+            background-color: #fff;
+            border-radius: 20px;
+            margin: 10px 10px;
+        }
+
+        .sidebar a:hover {
+            background-color: #e9ecef;
+            border-radius: 20px;
+        }
+
+        /* Arrow Toggle for Sidebar */
+        .sidebar-toggle {
+            display: none;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.2rem;
+            color: #000000;
+            cursor: pointer;
+        }
+
+        .sidebar.collapsed .sidebar-toggle i {
+            transform: rotate(180deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 220px; /* Space for sidebar on desktop */
+            padding: 20px;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        .main-content.collapsed {
+            margin-left: 90px; /* Adjusted for collapsed sidebar */
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content:flex-end;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid #06142270;
+        }
+
+        .top-nav .hamburger-toggle {
+            display: none; /* Hidden by default, shown on mobile */
+            font-size: 1.5rem;
+            color: #131111;
+            cursor: pointer;
+        }
+
+        .top-nav .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-nav .nav-links a {
+            margin-left: 20px;
+            color: #131111;
+            text-decoration: none;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .top-nav .nav-links a:hover {
+            color: #0b3664;
+        }
+
+        .dashboard-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #000;
+            margin-top: 45px;
+        }
+
+       
+        /* Responsive Adjustments */
+        /* Extra-large screens (≥992px, desktops) */
+        @media (min-width: 992px) {
+            .sidebar {
+                position: fixed;
+                height: calc(100vh - 20px);
+            }
+            .sidebar.collapsed {
+                width: 70px;
+            }
+            .sidebar.collapsed a {
+                display: none;
+            }
+            .sidebar.collapsed .sidebar-toggle {
+                text-align: center;
+            }
+            .sidebar-toggle {
+                display: block;
+            }
+            .main-content {
+                margin-left: 220px;
+            }
+            .main-content.collapsed {
+                margin-left: 90px;
+            }
+            .dashboard-title {
+                font-size: 2.8rem;
+            }
+            
+        }
+
+        /* Large screens (768px to 991px, tablets) */
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .sidebar {
+                position: fixed;
+                height: calc(100vh - 20px);
+                width: 180px;
+            }
+            .sidebar.collapsed {
+                width: 60px;
+            }
+            .sidebar.collapsed a {
+                display: none;
+            }
+            .sidebar.collapsed .sidebar-toggle {
+                text-align: center;
+            }
+            .sidebar-toggle {
+                display: block;
+            }
+            .sidebar a {
+                font-size: large;
+                padding: 8px 15px;
+            }
+            .main-content {
+                margin-left: 200px;
+            }
+            .main-content.collapsed {
+                margin-left: 80px;
+            }
+            .dashboard-title {
+                font-size: 2.4rem;
+            }
+        
+        }
+
+        /* Medium screens (576px to 767px, larger phones/small tablets) */
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            .sidebar {
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                height: calc(100vh - 20px);
+                width: 180px;
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .sidebar.collapsed {
+                width: 180px;
+            }
+            .sidebar a {
+                font-size: large;
+                padding: 8px 15px;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .main-content.collapsed {
+                margin-left: 0;
+            }
+            .top-nav .hamburger-toggle {
+                display: block;
+            }
+            .top-nav .nav-links a {
+                font-size: 1rem;
+            }
+            .dashboard-title {
+                font-size: 2rem;
+            }
+          
+        }
+
+        /* Small screens (<576px, mobile phones) */
+        @media (max-width: 575.98px) {
+            .sidebar {
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                height: calc(100vh - 20px);
+                width: 160px;
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .sidebar.collapsed {
+                width: 160px;
+            }
+            .sidebar a {
+                font-size: medium;
+                padding: 6px 12px;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .main-content.collapsed {
+                margin-left: 0;
+            }
+            .top-nav .hamburger-toggle {
+                display: block;
+            }
+            .top-nav .nav-links a {
+                font-size: 0.9rem;
+            }
+            .dashboard-title {
+                font-size: 1.8rem;
+            }
+          
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-toggle" onclick="toggleSidebarDesktop()">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="analysis.html"><i class="fas fa-chart-line"></i> Analysis</a>
+        <a href="graph.html" class="active"><i class="fas fa-chart-bar"></i> Graphs</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <div class="hamburger-toggle" onclick="toggleSidebarMobile()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-links">
+                <a href="landing.html">Home</a>
+                
+            </div>
+        </div>
+
+        <!-- Dashboard Title -->
+        <div class="dashboard-title">
+            <div class="mt-4 mb-4 text-center">IoT Buoy Monitoring-Graphs</div>
+        </div>
+
+       
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- JavaScript for Sidebar Toggle -->
+    <script>
+        // Toggle sidebar for desktop (using arrow)
+        function toggleSidebarDesktop() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+        }
+
+        // Toggle sidebar for mobile (using hamburger)
+        function toggleSidebarMobile() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Ensure sidebar state is correct on window resize
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('active');
+            } else {
+                sidebar.classList.remove('collapsed');
+                mainContent.classList.remove('collapsed');
+            }
+        });
+    </script>
+</body>
+</html>
