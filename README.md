@@ -1,1 +1,3 @@
+The IoT buoy system's website, powered by Firebase Realtime Database, delivers reliable, real-time environmental data from lake-deployed sensors. Dynamic dashboards display live graphs and sensor readings, instantly reflecting updates across devices and network conditions. Tested for stability in moderate weather—sunlight, wind, and light rain—the solar-powered, waterproof buoy ensures continuous, long-term performance in natural lake environments, providing seamless remote access to critical data.
+
 ![Screenshot 2025-04-01 001009](https://github.com/user-attachments/assets/74a33f9d-c426-4157-b1e7-1c29130ff83e)
